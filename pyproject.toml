@@ -22,8 +22,12 @@ classifiers = [
 # Environment settings
 requires-python = ">=3.8"
 dependencies = [
-	"appeal",
-	
+	"click",
+	"pandas",
+	"streamlit",	
+	"openpyxl",
+	"plotly"
+
 ]
 
 
@@ -36,11 +40,6 @@ dev = [
 	"black==22.8.0",
 	"ruff==0.0.257",
 	"mypy",
-	"sphinx",
-	"sphinx_rtd_theme",
-	"nbsphinx",
-	"sphinx-pyproject",
-	"sphinx-mdinclude"
 	]
 
 # Linter settings
@@ -91,21 +90,5 @@ warn_unreachable = true
 show_error_codes = true
 pretty = true
 
-[tool.sphinx-pyproject]
-github_username = ""
-github_repository = ""
-author = ""
-project = ""
-copyright = ""
-language = "en"
-package_root = ""
-extensions = [
-	"sphinx.ext.napoleon",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.autosectionlabel",
-    "nbsphinx",
-    "sphinx_mdinclude",
-	"sphinx.ext.autosummary",
-]
-html_theme = "sphinx_rtd_theme"
+[tool.setuptools]
+py-modules = []
