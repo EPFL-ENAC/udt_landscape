@@ -1,8 +1,11 @@
+import os
+
 import numpy as np
 import pandas as pd
 import streamlit as st
 from data_wrangling import get_actors, get_answers, get_quetions_name, get_themes
 from main_content import main_content
+from PIL import Image
 
 st.set_page_config(layout="wide")
 
@@ -18,6 +21,13 @@ df_answer = df_answer.merge(df_theme, on="theme id", how="left")
 
 
 with st.sidebar:
+    # add image
+    file_path = os.path.join(os.path.dirname(__file__), "static", "Logo-SGS-MSWord-Header-transparent.png")
+    if os.path.exists(file_path):
+        image = Image.open(file_path)
+        # st.image(image, width= use_column_width=True)
+        st.sidebar.image(image)
+
     selected_theme = st.selectbox("Select a Theme :", df_theme["theme name"])
     filtered_questions = df_question[
         df_question["theme id"] == df_theme.loc[df_theme["theme name"] == selected_theme, "theme id"].values[0]
