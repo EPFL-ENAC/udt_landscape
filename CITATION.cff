@@ -1,11 +1,10 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Lisa"
-  given-names: "Mona"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
-title: "My Research Software"
+- family-names: "Longchamp"
+  given-names: "Régis"
+  orcid: "https://orcid.org/0009-0009-4609-8473"
+title: "Urban digital twin swiss landscape analysis"
 version: 2.0.4
-doi: 10.5281/zenodo.1234
-date-released: 2017-12-18
+date-released: 2023-09-11
 url: "https://github.com/EPFL-ENAC/udt_landscape"
