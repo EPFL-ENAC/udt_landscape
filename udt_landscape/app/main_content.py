@@ -1,30 +1,29 @@
-import streamlit as st
 import pandas as pd
 import plotly.express as px
+import streamlit as st
 
-def main_content(df_answer : pd.DataFrame, question_id : str):
 
-    df_answer = df_answer[df_answer['question id'] == question_id]
+def main_content(df_answer: pd.DataFrame, question_id: str):
+    df_answer = df_answer[df_answer["question id"] == question_id]
 
-    
-    # Add question 
+    # Add question
     with st.container():
-        st.header(df_answer['question name'].values[0])
-    
+        st.header(df_answer["question name"].values[0])
+
     # Add question motivation
     with st.container():
         st.subheader("Question motivation")
-        st.write(df_answer['question motivation'].values[0])
+        st.write(df_answer["question motivation"].values[0])
 
-    # Add analysis 
+    # Add analysis
     with st.container():
         # create a piechart based on result colum
         st.subheader("Analysis")
-        st.write(df_answer['question analysis'].values[0])
-    
+        st.write(df_answer["question analysis"].values[0])
+
     # Add result
     with st.container():
-        value_counts = df_answer['result'].value_counts()
+        value_counts = df_answer["result"].value_counts()
         if value_counts.shape[0] != 0:
             st.subheader("Result")
             # Create a pie plot using Plotly Express
@@ -35,29 +34,22 @@ def main_content(df_answer : pd.DataFrame, question_id : str):
             # Display the pie plot in Streamlit
             st.plotly_chart(fig, use_container_width=True)
 
-    # Add remarks 
+    # Add remarks
     with st.container():
         # Add remarks table
-        df_filtered = df_answer.dropna(subset=['comment value'])
+        df_filtered = df_answer.dropna(subset=["comment value"])
 
-        if df_filtered.shape[0] :
+        if df_filtered.shape[0]:
             st.subheader("Comments")
 
             # Add remarks question
-            if not pd.isna(df_answer['comment description'].values[0]) : 
+            if not pd.isna(df_answer["comment description"].values[0]):
                 st.write(f"{df_answer['comment description'].values[0]} :")
-            else :
+            else:
                 st.write("Comment :")
-            df_filtered2 = df_filtered[['actor institution','comment value']]
+            df_filtered2 = df_filtered[["actor institution", "comment value"]]
 
             # st.table(df_filtered2)
-            st.dataframe(df_filtered2,use_container_width=True,hide_index = True)
+            st.dataframe(df_filtered2, use_container_width=True, hide_index=True)
 
-
-
-
-
-        
-
-
-    st.markdown('---')
+    st.markdown("---")
