@@ -36,20 +36,26 @@ def main_content(df_answer: pd.DataFrame, question_id: str):
 
     # Add remarks
     with st.container():
-        # Add remarks table
-        df_filtered = df_answer.dropna(subset=["comment value"])
+        matching_columns = [col for col in df_answer.columns if col.startswith("comment description")]
 
-        if df_filtered.shape[0]:
-            st.subheader("Comments")
+        for i, col in enumerate(matching_columns):
+            col_value_name = f"comment value {i}"
+            df_filtered = df_answer.dropna(subset=[col_value_name])
 
-            # Add remarks question
-            if not pd.isna(df_answer["comment description"].values[0]):
-                st.write(f"{df_answer['comment description'].values[0]} :")
-            else:
-                st.write("Comment :")
-            df_filtered2 = df_filtered[["actor institution", "comment value"]]
+            # Add remarks table
+            if df_filtered.shape[0]:
+                if i == 0:
+                    st.subheader("Comments ")
+                # Add remarks question
+                if not pd.isna(df_answer[col].values[0]):
+                    st.write(f"{df_answer[col].values[0]} :")
+                else:
+                    st.write("Comment :")
+                df_filtered2 = df_filtered[["actor institution", col_value_name]]
 
-            # st.table(df_filtered2)
-            st.dataframe(df_filtered2, use_container_width=True, hide_index=True)
+                # st.table(df_filtered2)
+                df_filtered2.rename(columns={"actor institution": "Actor", col_value_name: "Comment"}, inplace=True)
+
+                st.dataframe(df_filtered2, use_container_width=True, hide_index=True)
 
     st.markdown("---")
