@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -22,17 +24,59 @@ def main_content(df_answer: pd.DataFrame, question_id: str):
         st.write(df_answer["question analysis"].values[0])
 
     # Add result
-    with st.container():
-        value_counts = df_answer["result"].value_counts()
-        if value_counts.shape[0] != 0:
-            st.subheader("Result")
-            # Create a pie plot using Plotly Express
-            fig = px.pie(
-                names=value_counts.index,
-                values=value_counts.values,
-            )
-            # Display the pie plot in Streamlit
-            st.plotly_chart(fig, use_container_width=True)
+    if not df_answer["result"].isna().all():
+        with st.container():
+            st.subheader("Results")
+
+            def is_valid_json(json_str):
+                try:
+                    json.loads(json_str)
+                    return True
+                except:
+                    return False
+
+            is_json = df_answer["result"].apply(is_valid_json).all()
+
+            if is_json:
+                df_plot = pd.json_normalize(df_answer["result"].apply(json.loads))
+
+                tab1, tab2 = st.tabs(["Plots", "Raw data"])
+
+                with tab1:
+                    for col in df_plot.columns:
+                        st.write(col)
+                        value_counts = df_plot[col].value_counts()
+                        fig = px.pie(
+                            names=value_counts.index,
+                            values=value_counts.values,
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+                with tab2:
+                    df_raw_1 = df_answer["actor institution"].reset_index()
+                    df_raw = pd.concat([df_raw_1, df_plot], axis=1)
+                    df_raw = df_raw.drop(columns=["index"])
+                    df_raw.rename(columns={"actor institution": "Actor"}, inplace=True)
+
+                    st.dataframe(df_raw, use_container_width=True, hide_index=True)
+
+            else:
+                tab1, tab2 = st.tabs(["Plots", "Raw data"])
+
+                with tab1:
+                    value_counts = df_answer["result"].value_counts()
+                    if value_counts.shape[0] != 0:
+                        # Create a pie plot using Plotly Express
+                        fig = px.pie(
+                            names=value_counts.index,
+                            values=value_counts.values,
+                        )
+                        # Display the pie plot in Streamlit
+                        st.plotly_chart(fig, use_container_width=True)
+
+                with tab2:
+                    df_raw = df_answer[["actor institution", "result"]]
+                    df_raw.rename(columns={"actor institution": "Actor"}, inplace=True)
+                    st.dataframe(df_raw, use_container_width=True, hide_index=True)
 
     # Add remarks
     with st.container():

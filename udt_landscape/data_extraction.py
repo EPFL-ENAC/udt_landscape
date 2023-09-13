@@ -1,3 +1,4 @@
+import json
 import os
 from itertools import takewhile
 
@@ -40,10 +41,6 @@ def get_specific_question(df: pd.DataFrame, question_id: int) -> pd.DataFrame:
                 takewhile(lambda element: not str(element).startswith("Unnamed"), columns[index + 1 :])
             )
             df_answer = df[answer_columns]
-            answer_columns_without_remark = df_answer.columns[(df_answer.eq(1) | df_answer.isnull()).all()].tolist()
-            df_answer_without_remark = df[answer_columns_without_remark]
-            answer_column_remark = [item for item in answer_columns if item not in answer_columns_without_remark]
-            df_remark = df[answer_column_remark]
 
             def get_column_name(row):
                 columns_with_ones = row.index[row == 1]
@@ -52,14 +49,107 @@ def get_specific_question(df: pd.DataFrame, question_id: int) -> pd.DataFrame:
                 else:
                     return None
 
-            df_answer_without_remark["result"] = df_answer_without_remark.apply(get_column_name, axis=1)
-            try:
-                df_answer_without_remark["result"] = df_answer_without_remark["result"].str.replace(
-                    r"\.\d+$", "", regex=True
+            if question_id in [32]:
+                df_answer_without_remark = pd.DataFrame()
+                df_answer_json = pd.DataFrame()
+                list_header = []
+                list_header.append(
+                    [
+                        "Yes (1)",
+                        "No, but planned in a short term (2)",
+                        "No, unplanned (3)",
+                        "Not considered or unknown (4)",
+                    ]
                 )
-            except:
-                pass
-            df_answer_without_remark = df_answer_without_remark["result"]
+                list_header.append(
+                    [
+                        "Yes (1).1",
+                        "No, but planned in a short term (2).1",
+                        "No, unplanned (3).1",
+                        "Not considered or unknown (4).1",
+                    ]
+                )
+                list_header.append(
+                    [
+                        "Yes (1).2",
+                        "No, but planned in a short term (2).2",
+                        "No, unplanned (3).2",
+                        "Not considered or unknown (4).2",
+                    ]
+                )
+                list_header.append(
+                    [
+                        "Yes (1).3",
+                        "No, but planned in a short term (2).3",
+                        "No, unplanned (3).3",
+                        "Not considered or unknown (4).3",
+                    ]
+                )
+                list_header.append(
+                    [
+                        "Yes (1).4",
+                        "No, but planned in a short term (2).4",
+                        "No, unplanned (3).4",
+                        "Not considered or unknown (4).4",
+                    ]
+                )
+                list_header.append(
+                    [
+                        "Yes (1).5",
+                        "No, but planned in a short term (2).5",
+                        "No, unplanned (3).5",
+                        "Not considered or unknown (4).5",
+                    ]
+                )
+
+                list_name = []
+                list_name.append("Remote sensing (raster) data")
+                list_name.append("LIDAR data")
+                list_name.append("Human surveyed data")
+                list_name.append("Sensors (IoT) data")
+                list_name.append("Social media data")
+                list_name.append("Citizen reports data")
+
+                for i in range(len(list_header)):
+                    header = list_header[i]
+                    name = list_name[i]
+
+                    df_answer_1 = df_answer[header]
+                    df_answer_1[name] = df_answer_1.apply(get_column_name, axis=1)
+                    df_answer_1[name] = df_answer_1[name].str.replace(r"\s*\(\s*\d+\s*\)\s*", "", regex=True)
+                    df_answer_1[name] = df_answer_1[name].str.replace(r"\.\d+$", "", regex=True)
+                    df_answer_1 = df_answer_1[name]
+
+                    df_answer_json = pd.concat([df_answer_json, df_answer_1], axis=1)
+                    df_answer_without_remark["result"] = df_answer_json.apply(
+                        lambda row: json.dumps(row.to_dict()), axis=1
+                    )
+
+                df_answer_json.to_pickle(
+                    os.path.join(current_path_path, "app", "32.pkl"),
+                    compression="infer",
+                    protocol=5,
+                    storage_options=None,
+                )
+                answer_column_remark = [
+                    'If you selected "yes", please describe briefly the type of data you are using and its purpose:'
+                ]
+                df_remark = df[answer_column_remark]
+
+            else:
+                answer_columns_without_remark = df_answer.columns[(df_answer.eq(1) | df_answer.isnull()).all()].tolist()
+                df_answer_without_remark = df[answer_columns_without_remark]
+                answer_column_remark = [item for item in answer_columns if item not in answer_columns_without_remark]
+                df_remark = df[answer_column_remark]
+
+                df_answer_without_remark["result"] = df_answer_without_remark.apply(get_column_name, axis=1)
+                try:
+                    df_answer_without_remark["result"] = df_answer_without_remark["result"].str.replace(
+                        r"\.\d+$", "", regex=True
+                    )
+                except:
+                    pass
+                df_answer_without_remark = df_answer_without_remark["result"]
 
             df_result = df[["E-mail"]]
             df_result = pd.concat([df_result, df_answer_without_remark], axis=1)
@@ -81,10 +171,25 @@ def get_specific_question(df: pd.DataFrame, question_id: int) -> pd.DataFrame:
 
             # df = df[desired_order]
 
+        def empty_if_contains_underscore(cell_value):
+            if "___" in str(cell_value):
+                return ""
+            return cell_value
+
+        def empty_if_comment_dit(cell_value):
+            if "Comments." in str(cell_value):
+                return ""
+            return cell_value
+
+        df_result = df_result.map(empty_if_contains_underscore)
+        df_result = df_result.map(empty_if_comment_dit)
+
     return df_result
 
 
 def save_to_excel(df: pd.DataFrame, file_name: str):
+    # rename one column
+    df = df.rename(columns={"E-mail": "actor id"})
     df.to_excel(file_name, index=False)
 
 
@@ -107,7 +212,8 @@ if __name__ == "__main__":
     #     df = get_specific_question(df, i)
     #     # print(df.head())
     #     save_to_excel(df, os.path.join(root_folder, "data", f"temp{i}.xlsx"))
-    # i = 11
+
+    # i = 17
     # df = load_data()
     # df = get_specific_question(df, i)
     # save_to_excel(df, os.path.join(root_folder, "data", f"temp{i}.xlsx"))
