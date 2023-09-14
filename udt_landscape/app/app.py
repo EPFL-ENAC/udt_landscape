@@ -87,7 +87,7 @@ else:
         follow_up_question_id = df_answer[df_answer["question id"] == question_id]["follow up question id"].values[0]
         if "," in str(follow_up_question_id):
             follow_up_question_id_list = follow_up_question_id.split(",")
-            follow_up_question_id_list = [int(x) for x in follow_up_question_id_list]
+            follow_up_question_id_list = [int(x) for x in follow_up_question_id_list if x]
         else:
             follow_up_question_id_list = [int(follow_up_question_id)]
 
