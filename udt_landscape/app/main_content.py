@@ -35,29 +35,83 @@ def main_content(df_answer: pd.DataFrame, question_id: str):
                 except:
                     return False
 
+            def is_list(json_str):
+                try:
+                    json.loads(json_str)
+                    if isinstance(json.loads(json_str), list):
+                        return True
+                    else:
+                        return False
+                except:
+                    return False
+
             is_json = df_answer["result"].apply(is_valid_json).all()
 
             if is_json:
-                df_plot = pd.json_normalize(df_answer["result"].apply(json.loads))
-
+                is_list = df_answer["result"].apply(is_list).all()
                 tab1, tab2 = st.tabs(["Plots", "Raw data"])
 
-                with tab1:
-                    for col in df_plot.columns:
-                        st.write(col)
-                        value_counts = df_plot[col].value_counts()
-                        fig = px.pie(
-                            names=value_counts.index,
-                            values=value_counts.values,
-                        )
-                        st.plotly_chart(fig, use_container_width=True)
-                with tab2:
-                    df_raw_1 = df_answer["actor institution"].reset_index()
-                    df_raw = pd.concat([df_raw_1, df_plot], axis=1)
-                    df_raw = df_raw.drop(columns=["index"])
-                    df_raw.rename(columns={"actor institution": "Actor"}, inplace=True)
+                if is_list:
+                    df_answer["result"] = df_answer["result"].apply(json.loads)
+                    df_plot = df_answer.explode("result")[["result"]]
+                    with tab1:
+                        for col in df_plot.columns:
+                            st.write(col)
+                            value_counts = df_plot[col].value_counts()
+                            fig = px.pie(
+                                names=value_counts.index,
+                                values=value_counts.values,
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
 
-                    st.dataframe(df_raw, use_container_width=True, hide_index=True)
+                    with tab2:
+                        df_raw = df_answer.explode("result")[["actor institution", "result"]]
+
+                        # df_raw_1 = df_answer["actor institution"].reset_index()
+                        # df_raw = pd.concat([df_raw_1, df_plot], axis=1)
+                        # df_raw = df_raw.drop(columns=["index"])
+                        df_raw.rename(columns={"actor institution": "Actor"}, inplace=True)
+
+                        st.dataframe(df_raw, use_container_width=True, hide_index=True)
+
+                else:
+                    df_plot = pd.json_normalize(df_answer["result"].apply(json.loads))
+
+                    if question_id in [63, 64]:
+                        print(df_plot.columns)
+
+                        with tab1:
+                            # bar chart
+                            column_sums = df_plot.sum()
+                            column_sums_sorted = column_sums.sort_values(ascending=False).to_dict()
+                            df = pd.DataFrame(list(column_sums_sorted.items()), columns=["Item", "Occurrence"])
+                            st.dataframe(df, use_container_width=True, hide_index=True)
+
+                        with tab2:
+                            df_raw_1 = df_answer["actor institution"].reset_index()
+                            df_raw = pd.concat([df_raw_1, df_plot], axis=1)
+                            df_raw = df_raw.drop(columns=["index"])
+                            df_raw.rename(columns={"actor institution": "Actor"}, inplace=True)
+                            st.dataframe(df_raw, use_container_width=True, hide_index=True)
+
+                    else:
+                        with tab1:
+                            for col in df_plot.columns:
+                                st.write(col)
+                                value_counts = df_plot[col].value_counts()
+                                fig = px.pie(
+                                    names=value_counts.index,
+                                    values=value_counts.values,
+                                )
+                                st.plotly_chart(fig, use_container_width=True)
+
+                        with tab2:
+                            df_raw_1 = df_answer["actor institution"].reset_index()
+                            df_raw = pd.concat([df_raw_1, df_plot], axis=1)
+                            df_raw = df_raw.drop(columns=["index"])
+                            df_raw.rename(columns={"actor institution": "Actor"}, inplace=True)
+
+                            st.dataframe(df_raw, use_container_width=True, hide_index=True)
 
             else:
                 tab1, tab2 = st.tabs(["Plots", "Raw data"])
