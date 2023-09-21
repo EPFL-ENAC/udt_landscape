@@ -23,8 +23,9 @@ def main_content(df_answer: pd.DataFrame, question_id: str):
         st.subheader("Analysis")
         st.write(df_answer["question analysis"].values[0])
 
+    
     # Add result
-    if not df_answer["result"].isna().all():
+    if not all(df_answer['result'] == "[]") :
         with st.container():
             st.subheader("Results")
 

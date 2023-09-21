@@ -1,6 +1,7 @@
 import json
 import os
 from itertools import takewhile
+import re
 
 import pandas as pd
 
@@ -327,6 +328,48 @@ def get_specific_question(df: pd.DataFrame, question_id: int) -> pd.DataFrame:
             ]
             df_remark = df[answer_column_remark]
 
+        elif question_id in [38]:
+            answer_columns_without_remark = df_answer.columns[(df_answer.eq(1) | df_answer.isnull()).all()].tolist()
+            df_answer_without_remark = df[answer_columns_without_remark]
+
+            answer_column_remark = [item for item in answer_columns if item not in answer_columns_without_remark]
+            df_remark = df[answer_column_remark]
+            
+
+            # rename column
+            print(df_remark.columns)
+            df_remark = df_remark.rename(columns=
+                {
+                    "Vector datasets ___": "Vector datasets",
+                    "Raster datasets ___": "LIDAR datasets",
+                    "LIDAR datasets ___": "Raster datasets",
+
+                }
+            )
+
+            answer_column_remark = ['Vector datasets', 'Raster datasets', 'LIDAR datasets']
+
+            def get_columns_with_1(row):
+                r = [col for col in df_answer_without_remark.columns if row[col] == 1]
+                return json.dumps(r)
+
+            df_answer_without_remark["result"] = df_answer_without_remark.apply(get_columns_with_1, axis=1)
+
+            try:
+                df_answer_without_remark["result"] = df_answer_without_remark["result"].str.replace(
+                    r"\.\d+", "", regex=True
+                )
+            except:
+                pass
+
+            df_answer_without_remark = df_answer_without_remark["result"]
+
+            
+
+            
+
+
+        
         else:
             answer_columns_without_remark = df_answer.columns[(df_answer.eq(1) | df_answer.isnull()).all()].tolist()
             df_answer_without_remark = df[answer_columns_without_remark]
@@ -371,7 +414,6 @@ def get_specific_question(df: pd.DataFrame, question_id: int) -> pd.DataFrame:
         df_result.insert(0, "question id", question_id)
 
         for i, item in enumerate(answer_column_remark):
-            print(item)
             col_name = f"comment description {i}"
             df_result[col_name] = item
             col_name = f"comment value {i}"
@@ -394,9 +436,15 @@ def get_specific_question(df: pd.DataFrame, question_id: int) -> pd.DataFrame:
             if "Comments." in str(cell_value) or "undefined" in str(cell_value):
                 return ""
             return cell_value
+        
+        def empty_if_comment_2(cell_value):
+            if "." in str(cell_value) : 
+                return re.sub(r'\.\d+\s*$', '', cell_value)
+            return cell_value
 
         df_result = df_result.map(empty_if_contains_underscore)
         df_result = df_result.map(empty_if_comment_dit)
+        df_result = df_result.map(empty_if_comment_2)
 
     return df_result
 
@@ -427,7 +475,7 @@ if __name__ == "__main__":
     #     # print(df.head())
     #     save_to_excel(df, os.path.join(root_folder, "data", f"temp{i}.xlsx"))
 
-    # i = 52
+    # i = 39
     # df = load_data()
     # df = get_specific_question(df, i)
     # save_to_excel(df, os.path.join(root_folder, "data", f"temp{i}.xlsx"))

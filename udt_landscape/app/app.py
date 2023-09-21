@@ -1,5 +1,5 @@
 import os
-
+import sys
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -8,6 +8,12 @@ from main_content import main_content
 from PIL import Image
 
 st.set_page_config(layout="wide")
+
+mode = sys.argv[1]
+if mode in ['private','Private']:
+    is_private = True
+else:
+    is_private = False
 
 # Sidebar
 df_theme = get_themes()
@@ -20,7 +26,12 @@ df_answer = df_answer.merge(df_question, on="question id", how="left")
 df_answer = df_answer.merge(df_theme, on="theme id", how="left")
 
 
+
+
+
+
 with st.sidebar:
+
     # add image
     file_path = os.path.join(os.path.dirname(__file__), "static", "Logo-SGS-MSWord-Header-transparent.png")
     if os.path.exists(file_path):
@@ -44,16 +55,28 @@ with st.sidebar:
     # add a line
     st.sidebar.markdown("---")
 
+
     # multi select with distinct df_get_actors['actors type']
     selected_actors_type = st.sidebar.multiselect(
         "Select Actors Type:", df_get_actors["actor type"].unique(), default=df_get_actors["actor type"].unique()
     )
-    filtered_actor_name = df_get_actors[df_get_actors["actor type"].isin(selected_actors_type)]
-    selected_actor_name = st.sidebar.multiselect(
-        "Select Actors Name:",
-        filtered_actor_name["actor institution"].unique(),
-        default=filtered_actor_name["actor institution"].unique(),
-    )
+
+    if is_private :
+        filtered_actor_name = df_get_actors[df_get_actors["actor type"].isin(selected_actors_type)]
+        selected_actor_name = st.sidebar.multiselect(
+            "Select Actors Name:",
+            filtered_actor_name["actor institution"].unique(),
+            default=filtered_actor_name["actor institution"].unique(),
+        )
+
+    
+    if is_private :
+        st.write("This is the private version of the tool.")
+    else:
+        st.write("This is the public version of the tool. Data has been anonymized.")
+
+
+
 
 
 # filter by selected_theme
@@ -64,7 +87,8 @@ df_answer = df_answer[
 # filter by selected_actors_type
 df_answer = df_answer[df_answer["actor type"].isin(selected_actors_type)]
 # filter by selected_actor_name
-df_answer = df_answer[df_answer["actor institution"].isin(selected_actor_name)]
+if is_private :
+    df_answer = df_answer[df_answer["actor institution"].isin(selected_actor_name)]
 
 
 with st.container():
@@ -92,6 +116,12 @@ else:
             follow_up_question_id_list = [int(follow_up_question_id)]
 
         question_id_list += follow_up_question_id_list
+
+
+if not is_private :
+    df_answer['actor name'] = df_answer['actor anonymous']
+    df_answer['actor institution'] = df_answer['actor anonymous']
+
 
 
 # Add main content
