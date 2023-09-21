@@ -1,9 +1,16 @@
 version: "3.9"
 services:
-  streamlit_app:
+  streamlit_app_public:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile_public
+    restart: unless-stopped
+    ports:
+      - "8502:8502"
+  streamlit_app_private:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_private
     restart: unless-stopped
     labels:
       - "traefik.http.routers.app.tls=true"
