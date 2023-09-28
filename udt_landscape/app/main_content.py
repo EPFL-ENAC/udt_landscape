@@ -8,6 +8,8 @@ import streamlit as st
 def main_content(df_answer: pd.DataFrame, question_id: str):
     df_answer = df_answer[df_answer["question id"] == question_id]
 
+    
+
     # Add question
     with st.container():
         st.header(df_answer["question name"].values[0])
