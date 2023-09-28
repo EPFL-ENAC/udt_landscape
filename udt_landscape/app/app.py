@@ -9,11 +9,16 @@ from PIL import Image
 
 st.set_page_config(layout="wide")
 
-mode = sys.argv[1]
-if mode in ['private','Private']:
-    is_private = True
-else:
+try :
+    # Add a title
+    mode = sys.argv[1]
+    if mode in ['private','Private']:
+        is_private = True
+    else:
+        is_private = False
+except:
     is_private = False
+
 
 # Sidebar
 df_theme = get_themes()
@@ -91,15 +96,21 @@ if is_private :
     df_answer = df_answer[df_answer["actor institution"].isin(selected_actor_name)]
 
 
-with st.container():
-    st.header("Theme motivation")
-    st.write(df_answer["theme motivation"].values[0])
+
 
 
 # Get the question id
 question_id = filtered_questions.loc[filtered_questions["question alias"] == selected_question, "question id"].values[0]
 question_id_list = []
 
+with st.container():
+    if question_id == "all":
+        st.header("Theme")
+        tab1, tab2 = st.tabs(["Theme motivation", "Theme analysis"])
+        with tab1:
+            st.write(df_answer["theme motivation"].values[0])
+        with tab2:
+            st.write(df_answer["theme analysis"].values[0])
 
 if question_id == "all":
     # get all question_id in df_answer
