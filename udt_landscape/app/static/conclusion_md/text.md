@@ -4,7 +4,6 @@
 
 In terms of the level of maturity in the data visualization field, some respondents mentioned using 3D or BIM data in their processes. However, the majority of respondents still do not make reference to 3D or BIM models, despite having the technical capacity to do so.
 
-The current status of Data visualization is early 1.
 
 ![Untitled](images/Untitled.png)
 
