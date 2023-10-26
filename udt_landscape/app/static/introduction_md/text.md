@@ -1,20 +1,65 @@
-# Introduction 
+# Urban Digital Twin swiss landscape 
 
-The objective of this project is to assess and enhance the level of expertise and capability within the Swiss public administration concerning the implementation and utilization of Urban Digital Twin technologies, specifically from a Geographic Information Systems (GIS) standpoint. The project aims to evaluate the current maturity level of the Swiss public administration in this domain, including their proficiency in integrating diverse data sources, developing comprehensive virtual representations of urban environments, and utilizing GIS technology for effective urban planning and management. Through this assessment, the project seeks to identify areas of improvement and provide recommendations for enhancing the Swiss public administration's maturity in utilizing Urban Digital Twin methodologies from a GIS perspective.
+The objective of this project is to assess and enhance the level of expertise and capability within the Swiss public administration concerning the implementation and utilization of Urban Digital Twin technologies, specifically from a Geographic Information Systems (GIS) standpoint. 
 
-# Maturity models
+The project aims to evaluate the current maturity level of the Swiss public administration in this domain, including their proficiency in integrating diverse data sources, developing comprehensive virtual representations of urban environments, and utilizing GIS technology for effective urban planning and management. Through this assessment, the project seeks to identify areas of improvement and provide recommendations for enhancing the Swiss public administration's maturity in utilizing Urban Digital Twin methodologies from a GIS perspective.
+
+This project is a nationwide survey that includes 5 themes (data visualisation, accessibility, interoperability, management and processing). You can access these themes by navigating through the menu on the left-hand side of the page. Each theme contains multiple questions with their corresponding answers, remarks, and analysis.
+
+![Untitled](images/interface.png)
+
+# 
+# 
+# 
+
+# Digital Twin
+
+A virtual representation of a physical system (and its associated environment and processes) that is updated in real-time through the bi-directional exchange of information between the physical and virtual systems.
+
+![Untitled](images/udt.png)
+
+# 
+# 
+# 
+# Urban Digital Twin
+
+A virtual replica of the physical city, which collects data from the infrastructure, processes and services using connected devices and sensors. 
+
+
+
+
+![Untitled](images/udt2.png)
+
+# 
+
+
+Check out this project-related documentation:
+-  [Identification of issues and challenges through a review of scientific literature - Summary report in French](https://go.epfl.ch/urban_digital_twins_challenges_SPM_fr)
+-  [Urban Digital Twins & City Data Platforms - A simple glossary of key concepts](https://go.epfl.ch/urban_digital_twins_challenges_definition)
+-  [Literature review to identify key challenges of Urban Digital Twins](https://go.epfl.ch/urban_digital_twins_challenges_fullreport)
+
+
+
+
+
+
+
+# 
+# 
+
+### How to assess the maturity of an Urban Digital Twin ecosystem ?
 
 To assess and enhance the level of expertise and capability within the Swiss public administration concerning the implementation and utilization of Urban Digital Twin technologies, it is essential to select a suitable and standardised maturity spectrum. Maturity models are used to assess processes, organizations and systems against a norm and so identify the potential for improvements. These models, which originated in the software industry for improving software development and maintenance (Paulk et al., 1993), are a common topic of discussion in digital twin academic and professional literature (Davila Delgado & Oyedele, 2021). By defining a series of progressive phases that outline required capabilities, digital twins’ maturity models facilitate tracking, benchmarking and achieving technological advances [(Evans 2019)](https://www.zotero.org/google-docs/?0uoYjk)
 
 Several digital twin maturity models and classifications have been compiled by Masoumi (2022).
 
-![Untitled](images/Untitled.png)
+![Untitled](images/Untitled.jpg)
 
 
 
 We opted to adopt the maturity spectrum suggested by the Institution of Engineering and Technology (IET) for this project. The decision was driven by the fact that this model exhibits greater detail compared to the others and has been utilized in numerous scientific publications. This particular spectrum offers a well-defined and industry-agnostic framework that encompasses six development elements, providing clear requirements and desired outcomes.
 
-## **Digital twin maturity spectrum**
+ **Digital twin maturity spectrum**
 
 The text in the following paragraph has been taken from [(Evans 2019)](https://www.zotero.org/google-docs/?ZHNLlW).
 
@@ -22,7 +67,7 @@ The text in the following paragraph has been taken from [(Evans 2019)](https://w
 
 Here is a detailed view of the maturity elements :
 
-### **Element 0**
+**Element 0**
 
 *Reality capture (for existing physical assets)*
 
@@ -36,7 +81,7 @@ Equally, for certain situations or assets a drawing or sketch might be an approp
 
 Element 0 immediately provides value through having greater asset certainty, spatial context and understanding. This is particularly true in sectors where a high proportion of assets are built and ageing, or in high-hazard sectors where it reduces worker exposure to dangerous tasks. Sometimes it’s appropriate to work within these point-cloud datasets, but often there is significant value in going to the next level of maturity.
 
-### **Element 1**
+**Element 1**
 
 *2D map/systems or 3D model*
 
@@ -48,7 +93,7 @@ Models are purely object-based (surface, shapes, etc), with no metadata or BIM i
 
 At this level of maturity, the twin provides significant value through design/asset optimisation and coordination, answering questions, such as: is there space to run a new line through that module? And how would the maintenance team conduct that task?
 
-### **Element 2**
+**Element 2**
 
 ![Untitled](images/Untitled4.png)
 
@@ -60,7 +105,7 @@ This provides the basis for engineering, project planning, operations, maintenan
 
 Having a data model of this maturity also allows integrated multi-physics, multi-scale, probabilistic simulations to be run against the asset, either directly in the twin or through connected simulation applications; answering ‘what if’ questions such as: If I change X how will it impact Y?
 
-### **Element 3**
+**Element 3**
 
 ![Untitled](images/Untitled5.png)
 
@@ -70,7 +115,7 @@ Facilitated by sensors, connected devices and the Internet of Things (IoT), dyna
 This element of maturity is what many technology and service providers would identify as the starting point of a ‘true’ digital twin, though getting to this level of maturity requires several previous steps that are often not detailed.
 Developing Element 3 requires sensors and connected devices to actively or passively capture and collect data. This is often the first significant investment.
 
-### Element 4
+**Element 4**
 
 ![Untitled](images/Untitled6.png)
 
@@ -82,7 +127,7 @@ This integration can also apply between the twin and other digital assets, such 
 
 This full integration demonstrates the two methods of interacting with digital twins; human-to-machine and machine-to-machine.
 
-### Element 5
+**Element 5**
 
 ![Untitled](images/Untitled7.png)
 
