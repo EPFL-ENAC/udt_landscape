@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   streamlit_app_public:
     build:
@@ -12,16 +11,15 @@ services:
       context: .
       dockerfile: ./Dockerfile_private
     restart: unless-stopped
-  tequila:
+  reverse_proxy:
     build:
-      context: .
-      dockerfile: ./tequila/Dockerfile
+      context: ./openidc
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
       - ${SSL_CERT_CRT:-./cert/certificate.crt}:/usr/local/apache2/conf/server.crt
       - ${SSL_CERT_KEY:-./cert/certificate.key}:/usr/local/apache2/conf/server.key
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "80:80"
+      - "443:443"
