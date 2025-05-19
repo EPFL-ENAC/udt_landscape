@@ -4,8 +4,8 @@ services:
       context: .
       dockerfile: ./Dockerfile_public
     restart: unless-stopped
-    ports:
-      - "8502:8502"
+    # ports:
+    #   - "8502:8502"
   streamlit_app_private:
     build:
       context: .
